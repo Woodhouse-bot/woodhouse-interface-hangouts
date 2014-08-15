@@ -1,6 +1,8 @@
 module.exports = function(){
 
     this.name = 'hangouts';
+    this.displayname = 'Google Hangouts Chat';
+    this.description = 'Send messages to woodhouse via Google Hangouts';
 
     this.defaultPrefs = [{
         name: 'username',
