@@ -1,4 +1,4 @@
-module.exports = function(){
+var hangouts = function(){
 
     this.name = 'hangouts';
     this.displayname = 'Google Hangouts Chat';
@@ -14,31 +14,31 @@ module.exports = function(){
         value: ''
     }];
 
-    this.init = function(){
-        var self = this;
-        var hangoutsBot = require("hangouts-bot");
-        this.getPrefs().done(function(prefs){
-            self.bot = new hangoutsBot(prefs.username, prefs.password);
-            self.bot.on('online', function() {
-                self.addMessageSender(function(message, to){
-                    self.bot.sendMessage(to, message);
-                });
-            });
 
-            self.bot.on('message', function(from, message) {
-                self.messageRecieved(from, message)
-            });
-        })
-
-    }
-
-    this.exit = function(){
-        if (this.bot) {
-            this.bot.connection.end();
-        }
-    }
-
-    return this;
 }
 
+hangouts.prototype.init = function(){
+    var self = this;
+    var hangoutsBot = require("hangouts-bot");
+    this.getPrefs().done(function(prefs){
+        self.bot = new hangoutsBot(prefs.username, prefs.password);
+        self.bot.on('online', function() {
+            self.addMessageSender(function(message, to){
+                self.bot.sendMessage(to, message);
+            });
+        });
 
+        self.bot.on('message', function(from, message) {
+            self.messageRecieved(from, message)
+        });
+    })
+
+}
+
+hangouts.prototype.exit = function(){
+    if (this.bot) {
+        this.bot.connection.end();
+    }
+}
+
+module.exports = hangouts;
