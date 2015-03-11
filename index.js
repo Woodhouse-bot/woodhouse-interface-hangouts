@@ -27,7 +27,8 @@ hangouts.prototype.init = function(){
         self.connection = connection = new xmpp.Client({
             jid: prefs.username,
             password: prefs.password,
-            host: "talk.google.com"
+            host: "talk.google.com",
+            reconnect: true
         });
 
         self.connection.on('online', function() {
