@@ -83,8 +83,8 @@ hangouts.prototype.init = function(){
 }
 
 hangouts.prototype.exit = function(){
-    if (self.connection) {
-        self.connection.end();
+    if (this.connection) {
+        this.connection.end();
     }
 }
 
