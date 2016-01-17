@@ -68,7 +68,10 @@ hangouts.prototype.init = function(){
 
         self.connection.on('stanza', function(stanza) {
             if (stanza.is('message') && (stanza.attrs.type !== 'error') && (stanza.getChildText('body'))) {
-                self.messageRecieved(stanza.attrs.from, stanza.getChildText('body'));
+                var userParts = stanza.attrs.from.split('/');
+
+                userParts = userParts.slice(0, userParts.length - 1);
+                self.messageRecieved(stanza.attrs.from, stanza.getChildText('body'), userParts.join('/'));
             }
 
             if(stanza.is('presence') && stanza.attrs.type === 'subscribe') {
