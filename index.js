@@ -1,38 +1,42 @@
-var xmpp;
-var hangouts = function(){
+var xmppCore = require('node-xmpp-core'),
+    xmppClient = require('node-xmpp-client'),
+    hangouts = function(){
+        this.name = 'hangouts';
+        this.displayname = 'Google Hangouts Chat';
+        this.description = 'Send messages to woodhouse via Google Hangouts';
 
-    this.name = 'hangouts';
-    this.displayname = 'Google Hangouts Chat';
-    this.description = 'Send messages to woodhouse via Google Hangouts';
-
-    this.defaultPrefs = [{
-        name: 'username',
-        displayname: 'Username',
-        type: 'text',
-        value: ''
-    },{
-        name: 'password',
-        displayname: 'Password',
-        type: 'password',
-        value: ''
-    }];
-
-
-}
+        this.defaultPrefs = [{
+            name: 'username',
+            displayname: 'Username',
+            type: 'text',
+            value: ''
+        },{
+            name: 'password',
+            displayname: 'Password',
+            type: 'password',
+            value: ''
+        }];
+    }
 
 hangouts.prototype.init = function(){
     var self = this;
-    xmpp = require('node-xmpp');
     this.getPrefs().done(function(prefs){
-        self.connection = connection = new xmpp.Client({
+        self.connection = connection = new xmppClient({
             jid: prefs.username,
             password: prefs.password,
             host: "talk.google.com",
             reconnect: true
         });
 
+        self.connection.connection.socket.setTimeout(0)
+        self.connection.connection.socket.setKeepAlive(true, 10000)
+
+        self.connection.on('disconnect', function() {
+            self.connection.connect();
+        })
+
         self.connection.on('online', function() {
-            connection.send(new xmpp.Element('presence', {})
+            connection.send(new xmppCore.Element('presence', {})
                 .c('show')
                 .t('chat')
                 .up()
@@ -40,7 +44,7 @@ hangouts.prototype.init = function(){
                 .t('Online')
             );
 
-            var roster_elem = new xmpp.Element('iq', {
+            var roster_elem = new xmppCore.Element('iq', {
                 'from': connection.jid,
                 'type': 'get',
                 'id': 'google-roster'
@@ -53,7 +57,7 @@ hangouts.prototype.init = function(){
             connection.send(roster_elem);
 
             self.addMessageSender(function(message, to){
-                    var stanza = new xmpp.Element('message',
+                    var stanza = new xmppCore.Element('message',
                         {
                             to: to,
                             type: 'chat'
