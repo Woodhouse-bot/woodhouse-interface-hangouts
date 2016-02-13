@@ -72,8 +72,8 @@ hangouts.prototype.connect = function() {
                     .t(message);
 
                 this.connection.send(stanza);
-        });
-    });
+        }.bind(this));
+    }.bind(this));
 
 
     this.connection.on('stanza', function(stanza) {
@@ -90,7 +90,7 @@ hangouts.prototype.connect = function() {
 
             connection.send(stanza);
         }
-    });
+    }.bind(this));
 }
 
 hangouts.prototype.exit = function(){
