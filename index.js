@@ -28,8 +28,8 @@ hangouts.prototype.init = function(){
 
 hangouts.prototype.connect = function() {
     this.connection = connection = new xmppClient({
-        jid: this.prefs..username,
-        password: this.prefs..password,
+        jid: this.prefs.username,
+        password: this.prefs.password,
         host: "talk.google.com",
         reconnect: true
     });
