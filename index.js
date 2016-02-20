@@ -38,6 +38,7 @@ hangouts.prototype.connect = function() {
     this.connection.connection.socket.setKeepAlive(true, 10000)
 
     this.connection.on('disconnect', function() {
+        this.connection.end();
         this.connect();
     }.bind(this))
 
