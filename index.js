@@ -4,6 +4,7 @@ var xmppCore = require('node-xmpp-core'),
         this.name = 'hangouts';
         this.displayname = 'Google Hangouts Chat';
         this.description = 'Send messages to woodhouse via Google Hangouts';
+        this.disconnected = false;
 
         this.defaultPrefs = [{
             name: 'username',
@@ -38,11 +39,15 @@ hangouts.prototype.connect = function() {
     this.connection.connection.socket.setKeepAlive(true, 10000)
 
     this.connection.on('disconnect', function() {
-        this.connection.end();
-        this.connect();
+        if (!this.disconnected) {
+            this.disconnected = true;
+            this.connection.end();
+            this.connect();
+        }
     }.bind(this))
 
     this.connection.on('online', function() {
+        this.disconnected = false;
         connection.send(new xmppCore.Element('presence', {})
             .c('show')
             .t('chat')
